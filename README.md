@@ -1,4 +1,4 @@
-# Zk Sudoku Generalized Circom
+# Zk Sudoku Generalized
 
 ## Dependencies
 
