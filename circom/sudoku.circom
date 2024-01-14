@@ -27,6 +27,7 @@ template Sudoku(n,sqrt_n,log_n_plus_one) {
         }
     }
 
+    //Checking if all solution elements between 1 and n (inclusively)
     //Checking if each row has distinct n elements
     for (var col_i = 0; col_i < n; col_i++) {
         for (var row_i = 0; row_i < n; row_i++) {
