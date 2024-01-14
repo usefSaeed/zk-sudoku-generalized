@@ -44,7 +44,7 @@ fn check_cols<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
 fn check_subgrids<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
     solution: &Solution<N, Sg_N, ConstraintF>,
 ) -> Result<(), SynthesisError> {
-    let sg_i = 0;
+    let mut sg_i = 0;
     let mut subgrids = Vec::with_capacity(N); 
     for h_section_i in (0..N).step_by(Sg_N) {
         for v_section_i in (0..N).step_by(Sg_N) {
@@ -55,13 +55,13 @@ fn check_subgrids<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
                     }
                     let row_i = h_section_i + sg_row_i;
                     let col_i = v_section_i + sg_col_i;
-                    let row_vector = &subgrids[row_i];
-                    let cell = &row_vector[col_i];
-                    for prior_cell in subgrids[sg_i] {
+                    let row = &solution.0[row_i];
+                    let cell = &row[col_i];
+                    for prior_cell in &subgrids[sg_i] {
                         cell.is_neq(&prior_cell)?
                             .enforce_equal(&Boolean::TRUE)?;
                     }
-                    subgrids[sg_i].push(cell);
+                    subgrids[sg_i].push(cell.clone());
                 }
             }
             sg_i+=1;
@@ -95,8 +95,8 @@ fn check_helper<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
     solution: &[[u8; N]; N],
 ) {
     let cs = ConstraintSystem::<ConstraintF>::new_ref();
-    let puzzle_var = Puzzle::new_input(cs.clone(), || Ok(puzzle)).unwrap();
-    let solution_var = Solution::new_witness(cs.clone(), || Ok(solution)).unwrap();
+    let puzzle_var: Puzzle<N, Sg_N, ConstraintF> = Puzzle::new_input(cs.clone(), || Ok(puzzle)).unwrap();
+    let solution_var: Solution<N, Sg_N, ConstraintF> = Solution::new_witness(cs.clone(), || Ok(solution)).unwrap();
     check_consistency(&puzzle_var, &solution_var).unwrap();
     check_rows(&solution_var).unwrap();
     check_cols(&solution_var).unwrap();
