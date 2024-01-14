@@ -2,7 +2,7 @@ pragma circom 2.1.7;
 
 include "baseTemplates.circom";
 
-template Sudoku(n,sqrt_n,log_n) {
+template Sudoku(n,sqrt_n,log_n_plus_one) {
     // solution is a 2D array: indices are (row_i, col_i)
     signal input solution[n][n];
     // puzzle is the same, but a zero indicates a blank
@@ -15,7 +15,7 @@ template Sudoku(n,sqrt_n,log_n) {
 
     //Checking if n belong to {1,4,9,16,..} and inputs are consistant
     isValidN = SudokuSizeCheck();
-    isValidN.n_test <== n; isValidN.log_n_test <== log_n; isValidN.sqrt_n_test <== sqrt_n;
+    isValidN.n_test <== n; isValidN.log_n_test <== log_n_plus_one; isValidN.sqrt_n_test <== sqrt_n;
 
     //Checking if filled in cells are still the same in solution
     //Checking if all empty cells in puzzle now has a value in solution
@@ -28,27 +28,30 @@ template Sudoku(n,sqrt_n,log_n) {
     }
 
     //Checking if each row has distinct n elements
-    for (var row_i = 0; row_i < n; row_i++) {
-        for (var col_i = 0; col_i < n; col_i++) {
-            if (row_i == 0) {
-                distinct[0][col_i] = Distinct(n);
-            }
-            inRange[row_i][col_i] = OneToN(n,log_n);
-            inRange[row_i][col_i].in <== solution[row_i][col_i];
-            distinct[0][col_i].in[row_i] <== solution[row_i][col_i];
-        }
-    }
-
-    //Checking if each column has distinct n elements
     for (var col_i = 0; col_i < n; col_i++) {
         for (var row_i = 0; row_i < n; row_i++) {
             if (col_i == 0) {
                 distinct[1][row_i] = Distinct(n);
             }
+            // log("Checking[",row_i,"]","[",col_i,"]");
+            inRange[row_i][col_i] = OneToN(n,log_n);
+            inRange[row_i][col_i].in <== solution[row_i][col_i];
             distinct[1][row_i].in[col_i] <== solution[row_i][col_i];
         }
     }
-    log("subgrid issue");
+
+    //Checking if each column has distinct n elements
+    for (var row_i = 0; row_i < n; row_i++) {
+        for (var col_i = 0; col_i < n; col_i++) {
+            if (row_i == 0) {
+                distinct[0][col_i] = Distinct(n);
+            }
+            // if (row_i==n-1) log("Checking col",row_i);
+            distinct[0][col_i].in[row_i] <== solution[row_i][col_i];
+        }
+    }
+
+
     // Checking if each subgrid has distinct n elements
     var subgrid_i = 0;
     for (var h_section_i = 0; h_section_i < n; h_section_i += sqrt_n){
@@ -71,4 +74,4 @@ template Sudoku(n,sqrt_n,log_n) {
     }
 }
 
-component main {public[puzzle]} = Sudoku(9,3,4);
+component main {public[puzzle]} = Sudoku(4,2,3);

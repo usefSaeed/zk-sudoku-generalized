@@ -10,6 +10,7 @@ template FitsBits(b){
         bits[i] * (bits[i] - 1) === 0;
         bitsum = bitsum + 2 ** i * bits[i];
     }
+    // log(bitsum,"if last, not equal to",in);
     bitsum === in;
 }
 
@@ -20,6 +21,7 @@ template NonEqual(){
     signal inv;
     signal one <-- 1;
     inv <-- 1/ (in0 - in1);
+    // log(in0,"if last, equals",in1);
     inv * (in0 - in1) === one;
 }
 
@@ -50,6 +52,5 @@ template Log2Checker(){
         nBits++;
     }
     out <-- nBits;
-    log("lol ",out);
     out === log_n + log_n*0;
 }

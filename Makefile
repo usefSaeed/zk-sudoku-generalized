@@ -9,7 +9,7 @@ pk = sudoku.pk
 vk = sudoku.vk
 ptau = sudoku.ptau
 keys = $(pk) $(vk)
-p_input = sudoku.input.json
+p_input = sudoku4.input.json
 wit = sudoku.wtns
 pf = sudoku.pf.json
 inst = sudoku.inst.json
@@ -21,7 +21,7 @@ $(compile_outputs): $(circom)
 	circom $< --r1cs --wasm
 
 $(ptau):
-	snarkjs powersoftau new bn128 12 tmp.ptau
+	snarkjs powersoftau new bn128 14 tmp.ptau
 	snarkjs powersoftau prepare phase2 tmp.ptau $(ptau)
 	rm tmp.ptau
 
@@ -43,4 +43,3 @@ verify: $(pf) $(inst) $(vk)
 clean:
 	rm -f $(compile_outputs) $(ptau) $(keys) $(wit) $(prove_outputs)
 	rmdir sudoku_js
-

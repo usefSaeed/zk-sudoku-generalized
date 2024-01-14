@@ -18,6 +18,7 @@ template Distinct(n) {
     // log(in[0],in[1],in[2],in[3],in[4],in[5],in[6],in[7],in[8]);
     for(var i = 0; i < n; i++){
         for(var j = 0; j < i; j++){
+            // log("Checking in col",i,"and",j);
             nonEqual[i][j] = NonEqual();
             nonEqual[i][j].in0 <== in[i];
             nonEqual[i][j].in1 <== in[j];
