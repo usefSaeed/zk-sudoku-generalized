@@ -1,4 +1,4 @@
-# Circom Example
+# Zk Sudoku Generalized Circom
 
 ## Dependencies
 
@@ -6,12 +6,8 @@
 * [`node`](https://nodejs.org/en/)
 * [`snarkjs`](https://github.com/iden3/snarkjs)
 
-## Instructions
 
-The end-to-end target is `make verify`. See the Makefile for steps.
+## Acknowledgement
+[`inspired from this repo`](https://github.com/Pratyush/zk-mooc-lang-examples/tree/main/circom)
 
-## Files to edit
 
-* `sudoku.circom`: the template
-* `sudoku.input.json`: the prover's input
-  * the verifier's input, `sudoku.inst.json`, is computed from it
