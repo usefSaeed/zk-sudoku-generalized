@@ -9,11 +9,11 @@ use cmp::CmpGadget;
 mod cmp;
 mod alloc;
 
-pub struct Puzzle<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>([[UInt8<ConstraintF>; N]; N]);
-pub struct Solution<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>([[UInt8<ConstraintF>; N]; N]);
+pub struct Puzzle<const N: usize,const SG_N: usize, ConstraintF: PrimeField>([[UInt8<ConstraintF>; N]; N]);
+pub struct Solution<const N: usize,const SG_N: usize, ConstraintF: PrimeField>([[UInt8<ConstraintF>; N]; N]);
 
-fn check_rows<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
-    solution: &Solution<N, Sg_N, ConstraintF>,
+fn check_rows<const N: usize,const SG_N: usize, ConstraintF: PrimeField>(
+    solution: &Solution<N, SG_N, ConstraintF>,
 ) -> Result<(), SynthesisError> {
     for row in &solution.0 {
         for (j, cell) in row.iter().enumerate() {
@@ -26,8 +26,8 @@ fn check_rows<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
     Ok(())
 }
 
-fn check_cols<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
-    solution: &Solution<N, Sg_N, ConstraintF>,
+fn check_cols<const N: usize,const SG_N: usize, ConstraintF: PrimeField>(
+    solution: &Solution<N, SG_N, ConstraintF>,
 ) -> Result<(), SynthesisError> {
     for col_index in 0..N {
         for (i, cell) in solution.0.iter().enumerate() {
@@ -41,15 +41,15 @@ fn check_cols<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
     Ok(())
 }
 
-fn check_subgrids<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
-    solution: &Solution<N, Sg_N, ConstraintF>,
+fn check_subgrids<const N: usize,const SG_N: usize, ConstraintF: PrimeField>(
+    solution: &Solution<N, SG_N, ConstraintF>,
 ) -> Result<(), SynthesisError> {
     let mut sg_i = 0;
     let mut subgrids = Vec::with_capacity(N); 
-    for h_section_i in (0..N).step_by(Sg_N) {
-        for v_section_i in (0..N).step_by(Sg_N) {
-            for sg_row_i in 0..Sg_N {
-                for sg_col_i in 0..Sg_N {
+    for h_section_i in (0..N).step_by(SG_N) {
+        for v_section_i in (0..N).step_by(SG_N) {
+            for sg_row_i in 0..SG_N {
+                for sg_col_i in 0..SG_N {
                     if sg_i==0 {
                         subgrids.push(Vec::with_capacity(N))
                     }
@@ -70,9 +70,9 @@ fn check_subgrids<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
     Ok(())
 }
 
-fn check_consistency<const N: usize,const Sg_N: usize,ConstraintF: PrimeField>(
-    puzzle: &Puzzle<N, Sg_N, ConstraintF>,
-    solution: &Solution<N, Sg_N, ConstraintF>,
+fn check_consistency<const N: usize,const SG_N: usize,ConstraintF: PrimeField>(
+    puzzle: &Puzzle<N, SG_N, ConstraintF>,
+    solution: &Solution<N, SG_N, ConstraintF>,
 ) -> Result<(), SynthesisError> {
     for (p_row, s_row) in puzzle.0.iter().zip(&solution.0) {
         for (p, s) in p_row.iter().zip(s_row) {
@@ -90,13 +90,13 @@ fn check_consistency<const N: usize,const Sg_N: usize,ConstraintF: PrimeField>(
     Ok(())
 }
 
-fn check_helper<const N: usize,const Sg_N: usize, ConstraintF: PrimeField>(
+fn check_helper<const N: usize,const SG_N: usize, ConstraintF: PrimeField>(
     puzzle: &[[u8; N]; N],
     solution: &[[u8; N]; N],
 ) {
     let cs = ConstraintSystem::<ConstraintF>::new_ref();
-    let puzzle_var: Puzzle<N, Sg_N, ConstraintF> = Puzzle::new_input(cs.clone(), || Ok(puzzle)).unwrap();
-    let solution_var: Solution<N, Sg_N, ConstraintF> = Solution::new_witness(cs.clone(), || Ok(solution)).unwrap();
+    let puzzle_var: Puzzle<N, SG_N, ConstraintF> = Puzzle::new_input(cs.clone(), || Ok(puzzle)).unwrap();
+    let solution_var: Solution<N, SG_N, ConstraintF> = Solution::new_witness(cs.clone(), || Ok(solution)).unwrap();
     check_consistency(&puzzle_var, &solution_var).unwrap();
     check_rows(&solution_var).unwrap();
     check_cols(&solution_var).unwrap();

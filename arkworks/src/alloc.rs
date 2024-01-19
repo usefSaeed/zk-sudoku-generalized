@@ -6,7 +6,7 @@ use ark_relations::r1cs::{Namespace, SynthesisError};
 
 use crate::{Puzzle, Solution};
 
-impl<const N: usize,const Sg_N: usize, F: PrimeField> AllocVar<[[u8; N]; N], F> for Puzzle<N,Sg_N, F> {
+impl<const N: usize,const SG_N: usize, F: PrimeField> AllocVar<[[u8; N]; N], F> for Puzzle<N,SG_N, F> {
     fn new_variable<T: Borrow<[[u8; N]; N]>>(
         cs: impl Into<Namespace<F>>,
         f: impl FnOnce() -> Result<T, SynthesisError>,
@@ -25,7 +25,7 @@ impl<const N: usize,const Sg_N: usize, F: PrimeField> AllocVar<[[u8; N]; N], F> 
     }
 } 
 
-impl<const N: usize,const Sg_N: usize, F: PrimeField> AllocVar<[[u8; N]; N], F> for Solution<N,Sg_N, F> {
+impl<const N: usize,const SG_N: usize, F: PrimeField> AllocVar<[[u8; N]; N], F> for Solution<N,SG_N, F> {
     fn new_variable<T: Borrow<[[u8; N]; N]>>(
         cs: impl Into<Namespace<F>>,
         f: impl FnOnce() -> Result<T, SynthesisError>,
